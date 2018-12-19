@@ -17,6 +17,10 @@ const webpackConfig = {
   target: 'electron-renderer',
 
   resolve: {
+    alias: {
+      Components: path.resolve(path.resolve(__dirname, '..'), 'src/components/'),
+      Util: path.resolve(path.resolve(__dirname, '..'), 'src/util/'),
+    },
     extensions: ['.ts', '.tsx', '.js']
   },
 
