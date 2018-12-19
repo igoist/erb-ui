@@ -62,13 +62,15 @@ class Modal extends React.Component {
     this.mask.classList.add('fade-leave-active');
 
     let handleOut = () => {
-      this.mask.classList.remove('fade-leave');
-      this.mask.classList.remove('fade-leave-active');
+      if (this.mask) {
+        this.mask.classList.remove('fade-leave');
+        this.mask.classList.remove('fade-leave-active');
 
-      document.body.style.overflow = null;
-      this.mask.removeEventListener('animationend', handleOut);
+        document.body.style.overflow = null;
+        this.mask.removeEventListener('animationend', handleOut);
 
-      close();
+        close();
+      }
     };
 
     this.mask.addEventListener('animationend', handleOut);
