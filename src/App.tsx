@@ -2,11 +2,17 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { Confirm } from 'Components/Modal';
 import { showMessage } from 'Components/Message';
+import { Loading } from 'Components/Loading';
 
 export interface AppProps {
   compiler: string;
   framework: string;
 }
+
+const loading01 = new Loading({
+  text: 'loading01',
+  type: 2
+});
 
 export class App extends React.Component<AppProps, any> {
   constructor(props: AppProps) {
@@ -50,6 +56,12 @@ export class App extends React.Component<AppProps, any> {
           type: 'success'
         })
         break;
+      case 'loadingRequest':
+        loading01.loadingRequest();
+        break;
+      case 'loadingFinish':
+        loading01.finishLoadingRequest();
+        break;
     }
 
   }
@@ -60,8 +72,10 @@ export class App extends React.Component<AppProps, any> {
     return (
       <div>
         <h1>Hello{ this.state.t } from { compiler } and { framework }!</h1>
-        <button className='btn ok' style={{ marginRight: '12px' }} onClick={ () => this.handleClick('modal') }>Modal</button>
-        <button className='btn ok' onClick={ () => this.handleClick('message') }>Message</button>
+        <button className='btn bounce ok' style={{ marginRight: '12px' }} onClick={ () => this.handleClick('modal') }>Modal</button>
+        <button className='btn bounce ok' style={{ marginRight: '12px' }} onClick={ () => this.handleClick('message') }>Message</button>
+        <button className='btn bounce ok' style={{ marginRight: '12px' }} onClick={ () => this.handleClick('loadingRequest') }>loadingRequest</button>
+        <button className='btn bounce cancel' onClick={ () => this.handleClick('loadingFinish') }>loadingFinish</button>
       </div>
     );
   }
