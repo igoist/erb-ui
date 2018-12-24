@@ -70,6 +70,13 @@
       content: '\E62E';
       color: #f5222d;
     }
+
+    &.response-loading:before {
+      content: '\E64D';
+      color: #1890ff;
+      display: inline-block;
+      animation: loadingCircle 1s infinite linear;
+    }
   }
 }
 
@@ -141,5 +148,16 @@
     transform-origin: 0 0;
     transform: translateY(-100%);
     opacity: 0
+  }
+}
+
+@keyframes loadingCircle {
+  0% {
+    transform-origin: 50% 50%;
+    transform: rotate(0deg);
+  }
+  100% {
+    transform-origin: 50% 50%;
+    transform: rotate(360deg);
   }
 }

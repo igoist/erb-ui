@@ -10,6 +10,8 @@ const showMessage = (config: MessageProps) => {
 
   message.render();
   message.componentDidMount();
+
+  return message;
 }
 
 export default Message;

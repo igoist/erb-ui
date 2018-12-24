@@ -10,12 +10,16 @@ export interface MessageProps {
 
 export default class Message {
   props: MessageProps;
+  counter: number;
   tmpNode: any;
 
   constructor(props: MessageProps) {
     this.props = props;
+    this.counter = 0;
 
-    this.handleLeave = this.handleLeave.bind(this);
+    // this.messageLeave = this.messageLeave.bind(this);
+    // this.handleLeave = this.handleLeave.bind(this);
+    // this.finishLoadingRequest = this.finishLoadingRequest.bind(this);
   }
 
   componentDidMount() {
@@ -31,17 +35,25 @@ export default class Message {
     this.tmpNode.classList.add('move-up-enter-active');
   }
 
-  handleLeave(tmpNode: any) {
+  messageLeave() {
+    this.tmpNode.addEventListener('animationend', () => {
+      this.tmpNode.parentNode.removeChild(this.tmpNode);
+      this.tmpNode = null;
+    });
+
+    this.tmpNode.classList.add('move-up-leave');
+    this.tmpNode.classList.add('move-up-leave-active');
+  }
+
+  handleLeave() {
     const { duration = 2000 } = this.props;
     setTimeout(() => {
-      tmpNode.addEventListener('animationend', () => {
-        tmpNode.parentNode.removeChild(tmpNode);
-        tmpNode = null;
-      });
-
-      tmpNode.classList.add('move-up-leave');
-      tmpNode.classList.add('move-up-leave-active');
+      this.messageLeave();
     }, duration);
+  }
+
+  finishLoadingRequest() {
+    this.messageLeave();
   }
 
   render() {
@@ -70,7 +82,9 @@ export default class Message {
       div.appendChild(span);
       document.body.appendChild(div);
     }
-    this.handleLeave(tmpNode);
+    if (type !== 'loading') {
+      this.handleLeave();
+    }
 
     return tmpNode;
   }
