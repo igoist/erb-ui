@@ -14,6 +14,8 @@ const loading01 = new Loading({
   type: 2
 });
 
+let message: any;
+
 export class App extends React.Component<AppProps, any> {
   constructor(props: AppProps) {
     super(props);
@@ -50,17 +52,25 @@ export class App extends React.Component<AppProps, any> {
         });
         break;
       case 'message':
-        showMessage({
+        message = showMessage({
           content: 'Message: ...',
-          duration: 2000,
-          type: 'success'
-        })
+          duration: 2000 * 1000,
+          type: 'loading',
+          extraFunc: () => {
+            showMessage({
+              content: 'Message: success',
+              duration: 2000,
+              type: 'success',
+            });
+          }
+        });
         break;
       case 'loadingRequest':
         loading01.loadingRequest();
         break;
       case 'loadingFinish':
         loading01.finishLoadingRequest();
+        message.finishLoadingRequest();
         break;
     }
 

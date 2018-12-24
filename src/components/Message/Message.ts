@@ -6,6 +6,7 @@ export interface MessageProps {
   content: string;
   type?: string;
   duration?: number;
+  extraFunc?: () => void;
 }
 
 export default class Message {
@@ -36,17 +37,31 @@ export default class Message {
   }
 
   messageLeave() {
-    this.tmpNode.addEventListener('animationend', () => {
-      this.tmpNode.parentNode.removeChild(this.tmpNode);
-      this.tmpNode = null;
-    });
+    if (this.tmpNode) {
+      this.tmpNode.addEventListener('animationend', () => {
+        // you need to consider about whether the dom still exists or not in async case
+        if (this.tmpNode) {
+          this.tmpNode.parentNode.removeChild(this.tmpNode);
+          this.tmpNode = null;
 
-    this.tmpNode.classList.add('move-up-leave');
-    this.tmpNode.classList.add('move-up-leave-active');
+          if (this.props.extraFunc) {
+            this.props.extraFunc();
+          }
+        }
+      });
+
+      this.tmpNode.classList.add('move-up-leave');
+      this.tmpNode.classList.add('move-up-leave-active');
+    }
   }
 
   handleLeave() {
     const { duration = 2000 } = this.props;
+
+    this.tmpNode.addEventListener('click', () => {
+      this.messageLeave();
+    });
+
     setTimeout(() => {
       this.messageLeave();
     }, duration);

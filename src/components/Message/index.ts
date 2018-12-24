@@ -1,11 +1,12 @@
 import Message, { MessageProps } from './Message';
 
 const showMessage = (config: MessageProps) => {
-  let { content, duration, type } = config;
+  let { content, duration, type, extraFunc } = config;
   let message = new Message({
     content,
     duration,
-    type
+    type,
+    extraFunc
   });
 
   message.render();
