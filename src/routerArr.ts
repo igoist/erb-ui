@@ -1,5 +1,5 @@
-// import App from './usecase/App';
 import { App } from './App';
+import UploadUsecase from './usecase/Upload';
 
 const currentUrl = '/';
 
@@ -20,9 +20,9 @@ const routerArr: Array<RouterArrProps> = [
     exact: true
   },
   {
-    path: currentUrl + 'message',
-    title: 'Components: Message',
-    component: App
+    path: currentUrl + 'upload',
+    title: 'Usecase: Upload',
+    component: UploadUsecase
   },
 ];
 

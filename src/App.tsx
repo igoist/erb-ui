@@ -70,7 +70,7 @@ export class App extends React.Component<AppProps, any> {
         break;
       case 'loadingFinish':
         loading01.finishLoadingRequest();
-        message.finishLoadingRequest();
+        message && message.finishLoadingRequest();
         break;
     }
 

@@ -4,7 +4,7 @@ import { AppContainer } from 'react-hot-loader';
 import '../dist/css/main.css';
 
 import {
-  BrowserRouter as Router
+  HashRouter as Router
 } from 'react-router-dom';
 
 import { Menu, Routes } from './router';
