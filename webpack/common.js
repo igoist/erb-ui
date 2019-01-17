@@ -1,5 +1,6 @@
 /* eslint: disable */
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const publicPath = '/';
@@ -25,7 +26,7 @@ const webpackConfig = {
   },
 
   output: {
-    filename: '[name].bundle.min.js',
+    filename: '[name].[hash:8].js',
     path: path.resolve(path.resolve(__dirname, '..'), 'dist/'),
     publicPath
   },
@@ -58,7 +59,7 @@ const webpackConfig = {
     new HtmlWebpackPlugin({
       template: path.resolve(path.resolve(__dirname, '..'), './public/index.html')
     })
-  ]
+  ],
 };
 
 module.exports = webpackConfig;

@@ -4,7 +4,7 @@
   "description": "erb-ui",
   "main": "main.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --config webpack/prod.js",
     "dev": "webpack-dev-server --config webpack/dev.js",
     "start": "electron ."
   },
