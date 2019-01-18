@@ -1,6 +1,7 @@
 import { App } from './App';
 import UploadUsecase from './usecase/Upload';
 import LiveNewHome from './page/LiveNewHome';
+import Screenshot from './usecase/Screenshot';
 
 const currentUrl = '/';
 
@@ -24,6 +25,11 @@ const routerArr: Array<RouterArrProps> = [
     path: currentUrl + 'upload',
     title: 'Usecase: Upload',
     component: UploadUsecase
+  },
+  {
+    path: currentUrl + 'screenshot',
+    title: 'Usecase: Screenshot',
+    component: Screenshot
   },
   {
     path: currentUrl + 'liveNewHome',
