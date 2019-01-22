@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset=utf-8>
-  <meta name=viewport content="width=device-width,initial-scale=1">
-  <title>截图</title>
-  <link href="./screenshot.css" rel=stylesheet>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Screenshot</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <img id="capture" class="capture">
-  <div class="mask" title="ctrl+alt+a快速截图，按住鼠标左键选择截图区域，鼠标右键或ESC退出截屏"></div>
-  <canvas id="canvas" width="0" height="0"></canvas>
-  <div id="capture-toolbar" class="capture-toolbar">
-    <button id="cancel" title="取消">
-      <span class="capture-toolbar-icon-cancel"></span>
-    </button>
-    <button id="check" title="确定">
-      <span class="capture-toolbar-icon-check"></span>
-    </button>
+  <div id="js-bg" class="bg"></div>
+  <div id="js-mask" class="mask"></div>
+  <canvas id="js-canvas" class="image-canvas"></canvas>
+  <div id="js-size-info" class="size-info"></div>
+  <div id="js-toolbar" class="toolbar">
+    <div class="iconfont icon-zhongzhi" id="js-tool-reset"></div>
+    <div class="iconfont icon-xiazai" id="js-tool-save"></div>
+    <div class="iconfont icon-guanbi" id="js-tool-close"></div>
+    <div class="iconfont icon-duihao" id="js-tool-ok"></div>
   </div>
-  <script src="./screenshot.js"></script>
+
+  <script src="./screenshot-renderer.js"></script>
 </body>
 </html>
