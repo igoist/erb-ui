@@ -13,11 +13,19 @@
   <canvas id="js-canvas" class="image-canvas"></canvas>
   <div id="js-size-info" class="size-info"></div>
   <div id="js-toolbar" class="toolbar">
-    <div class="iconfont icon-zhongzhi" id="js-tool-reset"></div>
+    <div class="iconfont icon-zhongzhi" id="js-tool-reset">采集</div>
     <div class="iconfont icon-xiazai" id="js-tool-save"></div>
     <div class="iconfont icon-guanbi" id="js-tool-close"></div>
     <div class="iconfont icon-duihao" id="js-tool-ok"></div>
   </div>
+  <div id="btnTrick" style="position: absolute; top: 0; width: 60px; height: 60px; background: #cccfff;">
+
+  </div>
+  <div id="btnTrick2" style="position: absolute; top: 60px; width: 60px; height: 60px; background: #2ba2d1;">
+
+  </div>
+  <canvas id="canvasTrick" style="position: absolute; bottom: 0px; right: 0; width: 400px; height: 300px; background: #2ba2d1;" width="400" height="300"></canvas>
+  <canvas id="canvasFollow" style="position: absolute; width: 108px; height: 108px;" width="22" height="22"></canvas>
 
   <script src="./screenshot-renderer.js"></script>
 </body>

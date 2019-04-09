@@ -59,8 +59,14 @@ function getScreen(callback) {
     document.body.appendChild(video)
   }
 
-  this.handleError = (e) => {
-    // console.log(e)
+  this.handleSuccess = (stream) => {
+    console.log('yaaahahah');
+    console.log(stream);
+    this.handleStream(stream);
+  }
+
+  this.handleError = (err) => {
+    console.log('destop-capture handleError: ', err);
   }
 
   if (require('os').platform() === 'win32') {
@@ -69,7 +75,7 @@ function getScreen(callback) {
       thumbnailSize: { width: 1, height: 1 },
     }, (e, sources) => {
       let selectSource = sources.filter(source => source.display_id + '' === curScreen.id + '')[0]
-      navigator.getUserMedia({
+      navigator.mediaDevices.getUserMedia({
         audio: false,
         video: {
           mandatory: {
@@ -81,12 +87,12 @@ function getScreen(callback) {
             maxHeight: 8000,
           },
         },
-      }, (e) => {
-        this.handleStream(e)
-      }, this.handleError)
+      })
+      .then(this.handleSuccess)
+      .catch(this.handleError)
     })
   } else {
-    navigator.getUserMedia({
+    navigator.mediaDevices.getUserMedia({
       audio: false,
       video: {
         mandatory: {
@@ -98,12 +104,13 @@ function getScreen(callback) {
           maxHeight: 8000,
         },
       },
-    }, (e) => {
-      this.handleStream(e)
-    }, this.handleError)
+    })
+    .then(this.handleSuccess)
+    .catch(this.handleError)
   }
 }
 
 exports.getScreenSources = ({ types = ['screen'] } = {}, callback) => {
+  console.log('in desktop-cap.. types: ', types);
   getScreen(callback)
 }

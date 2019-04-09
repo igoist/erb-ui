@@ -18,6 +18,12 @@ const ANCHORS = [
   { row: 'r', col: 'b', cursor: 'nwse-resize' },
 ];
 
+/**
+ * 绘制分为两部分:
+ * 1.drawRect    绘制截取框
+ * 2.drawAnchors 四周拖动锚点
+ */
+
 class CaptureEditor extends Event {
   constructor($canvas, $bg, imageSrc) {
       super()
@@ -41,11 +47,12 @@ class CaptureEditor extends Event {
   }
 
   async init() {
+    console.log('init here:', this.$bg);
     this.$bg.style.backgroundImage = `url(${this.imageSrc})`
     this.$bg.style.backgroundSize = `${this.screenWidth}px ${this.screenHeight}px`
     let canvas = document.createElement('canvas')
     let ctx = canvas.getContext('2d')
-    let img = await new Promise((resolve) => {
+    this.bgImg = await new Promise((resolve) => {
       let img = new Image()
       img.src = this.imageSrc
       if (img.complete) {
@@ -55,9 +62,9 @@ class CaptureEditor extends Event {
       }
     })
 
-    canvas.width = img.width
-    canvas.height = img.height
-    ctx.drawImage(img, 0, 0)
+    canvas.width = this.bgImg.width;
+    canvas.height = this.bgImg.height;
+    ctx.drawImage(this.bgImg, 0, 0);
     this.bgCtx = ctx
 
     document.addEventListener('mousedown', this.onMouseDown)
@@ -69,6 +76,9 @@ class CaptureEditor extends Event {
     if (this.disabled) {
       return
     }
+    let t = document.getElementById('canvasFollow');
+    t.style.display = 'none';
+
     this.mouseDown = true
     const { pageX, pageY } = e
     if (this.selectRect) {
@@ -249,7 +259,7 @@ class CaptureEditor extends Event {
     } = this.selectRect
 
     const scaleFactor = this.scaleFactor
-    let margin = 7
+    let margin = 6
     let radius = 5
     this.$canvas.style.left = `${x - margin}px`
     this.$canvas.style.top = `${y - margin}px`
@@ -264,8 +274,8 @@ class CaptureEditor extends Event {
       this.ctx.putImageData(imageData, margin * scaleFactor, margin * scaleFactor)
     }
     this.ctx.fillStyle = '#ffffff'
-    this.ctx.strokeStyle = '#67bade'
-    this.ctx.lineWidth = 2 * this.scaleFactor
+    this.ctx.strokeStyle = '#fff'; //'#000'; // '#67bade'
+    this.ctx.lineWidth = 1 * this.scaleFactor
 
     this.ctx.strokeRect(margin * scaleFactor, margin * scaleFactor, w * scaleFactor, h * scaleFactor)
     this.drawAnchors(w, h, margin, scaleFactor, radius)
@@ -299,11 +309,14 @@ class CaptureEditor extends Event {
       this.ctx.moveTo(next[0] + margin * scaleFactor + radius * scaleFactor, next[1] + margin * scaleFactor)
     })
     this.ctx.closePath()
-    this.ctx.fill()
+    this.ctx.fill();
+    // this.ctx.lineWidth = 1 * this.scaleFactor;
+    this.ctx.strokeStyle = '#000000';
     this.ctx.stroke()
   }
 
   onMouseMove(e) {
+    // console.log(e.pageX, e.pageY);
     if (this.disabled) {
       return
     }
@@ -338,6 +351,68 @@ class CaptureEditor extends Event {
         document.body.style.cursor = 'auto'
       }
       this.emit('moving')
+    } else {
+      // 非什么情况，显示放大镜
+      let scaleFactor = getCurrentScreen().scaleFactor;
+      let size = 108 / 2.0;
+      // let imageData = this.bgCtx.getImageData((e.pageX - size / 2) * scaleFactor, (e.pageY - size / 2) * scaleFactor, size * scaleFactor, size * scaleFactor);
+      let t = document.getElementById('canvasFollow');
+      let anotherTmp = document.createElement('canvas');
+      t.style.display = '';
+      if (scaleFactor > 1) {
+        t.width = `${ 108 * scaleFactor }`;
+        t.height = `${ 108 * scaleFactor }`;
+        // anotherTmp.width = `${ size * scaleFactor }`;
+        // anotherTmp.height = `${ size * scaleFactor }`;
+        anotherTmp.width = t.width;
+        anotherTmp.height = t.height;
+      } else {
+        t.width = 108;
+        t.height = 108;
+        anotherTmp.width = t.width;
+        anotherTmp.height = t.height;
+      }
+      t.style.top = `${ e.pageY + 20 }px`;
+      t.style.left = `${ e.pageX - 108 }px`;
+      let ctx = t.getContext('2d');
+      let ctx2 = anotherTmp.getContext('2d');
+      // ctx2.scale(2, 2);
+      ctx2.drawImage(this.bgImg, (e.pageX - size / 2) * scaleFactor, (e.pageY - size / 2) * scaleFactor, size * scaleFactor, size * scaleFactor, 0, 0, anotherTmp.width, anotherTmp.height);
+      ctx.drawImage(anotherTmp, 0, 0);
+
+      ctx.beginPath();
+      ctx.strokeStyle = '#e50834';
+      if (scaleFactor > 1) {
+        ctx.lineWidth = 1 * scaleFactor;
+        ctx.moveTo(0, (108 / 2.0 - 0.5) * scaleFactor);
+        ctx.lineTo(108 * scaleFactor, (108 / 2.0 - 0.5) * scaleFactor);
+        ctx.moveTo((108 / 2.0 - 0.5) * scaleFactor, 0);
+        ctx.lineTo((108 / 2.0 - 0.5) * scaleFactor, 108 * scaleFactor);
+      } else {
+        ctx.lineWidth = 1;
+        ctx.moveTo(0, 108 / 2 - 0.5);
+        ctx.lineTo(108, 108 / 2 - 0.5);
+        ctx.moveTo(108 / 2 - 0.5, 0);
+        ctx.lineTo(108 / 2 - 0.5, 108);
+      }
+      // ctx.moveTo(0, size / 2 - 0.5);
+      // ctx.moveTo(size, size / 2 - 0.5);
+      ctx.stroke();
+      // console.log('scaleF: ', scaleFactor);
+      // console.log('canvasFollow', t);
+      // console.log(t.width, t.height);
+
+      let ot = document.getElementById('canvasTrick');
+      if (scaleFactor > 1) {
+        ot.width = `${ scaleFactor * 400 }`;
+        ot.height = `${ scaleFactor * 300 }`;
+      } else {
+        ot.width = 400;
+        ot.height = 300;
+      }
+      let octx = ot.getContext('2d');
+
+      octx.drawImage(anotherTmp, 0, 0);
     }
   }
 
@@ -367,11 +442,32 @@ class CaptureEditor extends Event {
       x, y, w, h,
     } = this.selectRect
     if (w && h) {
+      console.log('capture-editor getImageUrl x y w h factor: ', x, y, w, h, scaleFactor);
       let imageData = this.bgCtx.getImageData(x * scaleFactor, y * scaleFactor, w * scaleFactor, h * scaleFactor)
       let canvas = document.createElement('canvas')
-      canvas.width = w
-      canvas.height = h
+
+      if (scaleFactor > 1) {
+        canvas.width = `${ scaleFactor * w }`;
+        canvas.height = `${ scaleFactor * h }`;
+      } else {
+        canvas.width = w;
+        canvas.height = h;
+      }
       let ctx = canvas.getContext('2d')
+
+      // a preview tmp canvas for testing
+      let t = document.getElementById('canvasTrick');
+      if (scaleFactor > 1) {
+        t.width = `${ scaleFactor * 400 }`;
+        t.height = `${ scaleFactor * 300 }`;
+      }
+      let tctx = t.getContext('2d');
+
+      tctx.putImageData(imageData, 0, 0);
+
+      console.log('canvasTrick', t);
+      console.log(t.width, t.height);
+
       ctx.putImageData(imageData, 0, 0)
       return canvas.toDataURL()
     }

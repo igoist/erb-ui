@@ -27,17 +27,20 @@ audio.src = './assets/audio/capture.mp3'
 const currentScreen = getCurrentScreen()
 
 // 右键取消截屏
-document.body.addEventListener('mousedown', (e) => {
-  if (e.button === 2) {
-    // window.close()
-    // ipcRenderer.send('capture-screen', {});
-  }
-}, true)
+// document.body.addEventListener('mousedown', (e) => {
+//   if (e.button === 2) {
+//     // window.close()
+//     // console.log('tag');
+//     // ipcRenderer.send('capture-screen', {
+//     //   type: 'cancel'
+//     // });
+//   }
+// }, true)
 
-// console.time('capture')
+console.time('capture')
 getScreenSources({}, (imgSrc) => {
 
-  // console.timeEnd('capture')
+  console.timeEnd('capture')
 
 
   let capture = new CaptureEditor($canvas, $bg, imgSrc)
@@ -87,9 +90,8 @@ getScreenSources({}, (imgSrc) => {
 
   $btnClose.addEventListener('click', () => {
     ipcRenderer.send('capture-screen', {
-      type: 'close',
+      type: 'cancel',
     })
-    window.close()
   })
 
   $btnReset.addEventListener('click', () => {
@@ -103,9 +105,12 @@ getScreenSources({}, (imgSrc) => {
     let url = capture.getImageUrl()
     remote.getCurrentWindow().hide()
 
+    // 这边逻辑应该是先发消息给 main 隐藏所有窗口，等声音播放完，再发消息正式关闭窗口
     audio.play()
     audio.onended = () => {
-      window.close()
+      ipcRenderer.send('capture-screen', {
+        type: 'cancel',
+      })
     }
     clipboard.writeImage(nativeImage.createFromDataURL(url))
     ipcRenderer.send('capture-screen', {
@@ -133,14 +138,12 @@ getScreenSources({}, (imgSrc) => {
             url,
             path,
           })
-          window.close()
         })
       } else {
         ipcRenderer.send('capture-screen', {
           type: 'cancel',
           url,
         })
-        window.close()
       }
     })
   })
