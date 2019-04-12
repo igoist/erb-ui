@@ -26,28 +26,27 @@ const ANCHORS = [
 
 class CaptureEditor extends Event {
   constructor($canvas, $bg, imageSrc) {
-      super()
-      this.$canvas = $canvas
-      this.imageSrc = imageSrc
-      this.disabled = false
-      let currentScreen = getCurrentScreen()
-      this.scaleFactor = currentScreen.scaleFactor
-      this.screenWidth = currentScreen.bounds.width
-      this.screenHeight = currentScreen.bounds.height
-      this.$bg = $bg
-      this.ctx = $canvas.getContext('2d')
+    super()
+    this.$canvas = $canvas
+    this.imageSrc = imageSrc
+    this.disabled = false
+    let currentScreen = getCurrentScreen()
+    this.scaleFactor = currentScreen.scaleFactor
+    this.screenWidth = currentScreen.bounds.width
+    this.screenHeight = currentScreen.bounds.height
+    this.$bg = $bg
+    this.ctx = $canvas.getContext('2d')
 
-      this.onMouseDown = this.onMouseDown.bind(this)
-      this.onMouseMove = this.onMouseMove.bind(this)
-      this.onMouseUp = this.onMouseUp.bind(this)
+    this.onMouseDown = this.onMouseDown.bind(this)
+    this.onMouseMove = this.onMouseMove.bind(this)
+    this.onMouseUp = this.onMouseUp.bind(this)
 
-      this.init().then(() => {
-          // console.log('init')
-      })
+    this.init().then(() => {
+    })
   }
 
   async init() {
-    console.log('init here:', this.$bg);
+    // console.log('init here:', this.$bg);
     this.$bg.style.backgroundImage = `url(${this.imageSrc})`
     this.$bg.style.backgroundSize = `${this.screenWidth}px ${this.screenHeight}px`
     let canvas = document.createElement('canvas')
