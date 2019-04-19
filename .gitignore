@@ -7,3 +7,5 @@ css/
 .sass-cache/
 
 package-lock.json
+
+src/usecase/Screenshot/
