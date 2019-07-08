@@ -2,8 +2,8 @@
 const { app, BrowserWindow, globalShortcut, ipcMain, clipboard, nativeImage } = require('electron');
 const webpackConfig = require('./webpack/dev');
 
-const { CaptureScreenInit } = require('./mainS/screenshot');
-
+const Screenshot = require('./src/usecase/Screenshot/index.js');
+const ColorPicker = require('./src/usecase/ColorPicker/index.js');
 
 function createWindow () {
   // 创建浏览器窗口
@@ -30,7 +30,8 @@ function createWindow () {
     win.webContents.send('mode-change', Math.random());
   });
 
-  CaptureScreenInit();
+  Screenshot.initPlugin();
+  ColorPicker.initPlugin();
 }
 
 app.on('ready', createWindow)

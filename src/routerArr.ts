@@ -2,6 +2,9 @@ import { App } from './App';
 import UploadUsecase from './usecase/Upload';
 import LiveNewHome from './page/LiveNewHome';
 import Screenshot from './usecase/Screenshot';
+import PageLoad from './usecase/PageLoad';
+import CardChange from './usecase/CardChange';
+import VideoPlayer from './usecase/VideoPlayer';
 
 const currentUrl = '/';
 
@@ -30,6 +33,21 @@ const routerArr: Array<RouterArrProps> = [
     path: currentUrl + 'screenshot',
     title: 'Usecase: Screenshot',
     component: Screenshot
+  },
+  {
+    path: currentUrl + 'card-change',
+    title: 'Usecase: CardChange',
+    component: CardChange
+  },
+  {
+    path: currentUrl + 'video-player',
+    title: 'Usecase: VideoPlayer',
+    component: VideoPlayer
+  },
+  {
+    path: currentUrl + 'page-load',
+    title: 'Usecase: PageLoad',
+    component: PageLoad
   },
   {
     path: currentUrl + 'liveNewHome',
