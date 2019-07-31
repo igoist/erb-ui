@@ -5,6 +5,7 @@ import Screenshot from './usecase/Screenshot';
 import PageLoad from './usecase/PageLoad';
 import CardChange from './usecase/CardChange';
 import VideoPlayer from './usecase/VideoPlayer';
+import StateManager from './usecase/StateManager';
 
 const currentUrl = '/';
 
@@ -33,6 +34,11 @@ const routerArr: Array<RouterArrProps> = [
     path: currentUrl + 'screenshot',
     title: 'Usecase: Screenshot',
     component: Screenshot
+  },
+  {
+    path: currentUrl + 'state-manager',
+    title: 'Usecase: StateManager',
+    component: StateManager
   },
   {
     path: currentUrl + 'card-change',
