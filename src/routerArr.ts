@@ -6,6 +6,7 @@ import PageLoad from './usecase/PageLoad';
 import CardChange from './usecase/CardChange';
 import VideoPlayer from './usecase/VideoPlayer';
 import StateManager from './usecase/StateManager';
+import Pins from './usecase/Pins';
 
 const currentUrl = '/';
 
@@ -34,6 +35,11 @@ const routerArr: Array<RouterArrProps> = [
     path: currentUrl + 'screenshot',
     title: 'Usecase: Screenshot',
     component: Screenshot
+  },
+  {
+    path: currentUrl + 'pins',
+    title: 'Usecase: Pins',
+    component: Pins
   },
   {
     path: currentUrl + 'state-manager',
