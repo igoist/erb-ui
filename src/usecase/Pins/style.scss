@@ -1,4 +1,7 @@
-#addPin {
+#addPin,
+#showState,
+#toPrevPage,
+#toNextPage {
   position: fixed;
   top: 60px;
   right: 100px;
@@ -8,6 +11,18 @@
   height: 32px;
   color: #fff;
   background: #333;
+}
+
+#showState {
+  top: 108px;
+}
+
+#toPrevPage {
+  top: 108px;
+}
+
+#toNextPage {
+  top: 156px;
 }
 
 .waterfall-wrap {

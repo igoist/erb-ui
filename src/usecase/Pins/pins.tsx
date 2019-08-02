@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+const { useState, useEffect } = React;
+
 interface PinProps {
   id: number,
   top: number,
@@ -21,7 +23,6 @@ const Pin = (props: PinProps) => {
         lineHeight: height + 'px',
         backgroundColor: bgColor
       }}
-      onClick={ () => setLayer(id) }
     >
       { id + 'x' }
     </div>
@@ -32,9 +33,9 @@ const o = {
   cellWidth: 236,
   cellSpace: 16,
   containerSelectorOffset: 50,
-  maxCol: 0,
-  minCol: 0,
-  height: 0,
+  // maxCol: 0,
+  // minCol: 0,
+  // height: 0,
 };
 
 interface WFCell {
@@ -46,7 +47,14 @@ interface WFCell {
   bgColor: string
 }
 
-const handlePos = (cell: WFCell, hs: Array<number>) => {
+type handlePosConfig = {
+  cell: WFCell,
+  hs: Array<number>,
+}
+
+const handlePos = (config: handlePosConfig) => {
+  const { cell, hs } = config;
+
   let cols = 4 - 0;
   let col = 0;
 
@@ -74,10 +82,11 @@ const handlePos = (cell: WFCell, hs: Array<number>) => {
     if (hs[i] > hs[max]) max = i;
   }
 
-  o.maxCol = max;
-  o.minCol = min;
+  // o.maxCol = max;
+  // o.minCol = min;
 
-  o.height = hs[max] + o.containerSelectorOffset;
+  let tmpWrapHeight = hs[max] + o.containerSelectorOffset;
+  // o.height = tmpWrapHeight;
 
   return {
     cell: {
@@ -86,12 +95,83 @@ const handlePos = (cell: WFCell, hs: Array<number>) => {
       top,
       left,
     },
-    hs,
+    wrapHeight: tmpWrapHeight,
+    hs: hs,
   }
 };
 
+const useStoreStatus = () => {
+  // default current is equal to storeList.length - 1
+  // and use it as storeState.storeList[storeState.current]
+  const [storeState, setStore] = useState({
+    storeList: [],
+    current: -1
+  });
+
+  const pushStore = (newStore: any, setMethod: (state: any) => void) => {
+    if (storeState.current === storeState.storeList.length - 1) {
+      setStore({
+        storeList: [
+          ...storeState.storeList,
+          newStore
+        ],
+        current: storeState.current + 1
+      });
+    } else {
+      let tmp = storeState.storeList.slice(0, storeState.current + 1);
+
+      setStore({
+        storeList: [
+          ...tmp,
+          newStore
+        ],
+        current: storeState.current + 1
+      });
+    }
+
+    setMethod(newStore);
+  };
+
+  const toPrevStore = (setMethod: (state: any) => void) => {
+    if (storeState.current > 0) {
+      setStore({
+        storeList: storeState.storeList,
+        current: storeState.current - 1
+      });
+
+      setMethod(storeState.storeList[storeState.current - 1]);
+
+      // console.log('toPrevStore: ', storeState.current, storeState.current - 1);
+    } else {
+      console.log('toPrevStore: is at the beginning');
+    }
+  };
+
+  const toNextStore = (setMethod: (state: any) => void) => {
+    if (storeState.current + 1 < storeState.storeList.length) {
+      setStore({
+        storeList: storeState.storeList,
+        current: storeState.current + 1
+      });
+
+      setMethod(storeState.storeList[storeState.current + 1]);
+
+      // console.log('toNextStore: ', storeState.current, storeState.current + 1);
+    } else {
+      console.log('toNextStore: is the latest');
+    }
+  };
+
+  return {
+    storeState,
+    pushStore,
+    toPrevStore,
+    toNextStore
+  }
+}
+
 const usePageStatus = () => {
-  const [pageState, setPageState] = React.useState({
+  const [pageState, setPageState] = useState({
     wrapHeight: 0,
     cols: 4,
     hs: [0, 0, 0, 0],
@@ -99,7 +179,9 @@ const usePageStatus = () => {
     globalPins: [],
   });
 
-  React.useEffect(() => {
+  const { pushStore, toPrevStore, toNextStore } = useStoreStatus();
+
+  useEffect(() => {
     console.log('usePageStatus Init');
     let xhr = new XMLHttpRequest();
     xhr.overrideMimeType('application/json');
@@ -112,20 +194,25 @@ const usePageStatus = () => {
 
         tmpPins = tmpGlobalPins.slice(0, 20);
 
+        let tmpWrapHeight = 0;
         let tmpHs = [0, 0, 0, 0];
         tmpPins = tmpPins.map((pin: WFCell) => {
-          const { cell, hs } = handlePos(pin, tmpHs);
+          const { cell, wrapHeight,  hs } = handlePos({
+            cell: pin,
+            hs: tmpHs
+          });
+          tmpWrapHeight = wrapHeight;
           tmpHs = hs;
           return cell;
         });
 
-        setPageState({
-          wrapHeight: o.height,
+        pushStore({
+          wrapHeight: tmpWrapHeight,
           cols: 4,
           hs: tmpHs,
           pins: tmpPins,
           globalPins: tmpGlobalPins,
-        });
+        }, setPageState);
       }
     };
     xhr.send();
@@ -133,32 +220,46 @@ const usePageStatus = () => {
 
   const addRandomPin = () => {
     let randomPin: WFCell = pageState.globalPins[pageState.pins.length];
-    console.log('AddRandomPin: ', pageState.pins.length);
 
-    const { cell, hs} = handlePos(randomPin, pageState.hs);
+    // [...pageState.hs] is really important
+    // parse a new copy, or you parse the old array's ref, and the old array would be changed
+    const { cell, wrapHeight, hs } = handlePos({
+      cell: randomPin,
+      hs: [...pageState.hs]
+    });
 
-    setPageState({
+    pushStore({
       ...pageState,
-      wrapHeight: o.height,
+      wrapHeight: wrapHeight,
       hs,
       pins: [
         ...pageState.pins, cell
       ]
-    });
+    }, setPageState);
   };
 
   const setLayer = (id: number) => {
 
   };
 
+  const toPrevPage = () => {
+    toPrevStore(setPageState);
+  }
+
+  const toNextPage = () => {
+    toNextStore(setPageState);
+  }
+
   return {
     pageState,
     addRandomPin,
+    toPrevPage,
+    toNextPage
   };
 };
 
 const App = () => {
-  const { pageState, addRandomPin } = usePageStatus();
+  const { pageState, addRandomPin, toPrevPage, toNextPage } = usePageStatus();
 
   return (
     <React.Fragment>
@@ -187,8 +288,15 @@ const App = () => {
         id='addPin'
         onClick={ addRandomPin }
       >AddRandomPin</button>
+      <button
+        id='toPrevPage'
+        onClick={ toPrevPage }
+      >toPrevPage</button>
+      <button
+        id='toNextPage'
+        onClick={ toNextPage }
+      >toNextPage</button>
     </React.Fragment>
-
   );
 }
 
