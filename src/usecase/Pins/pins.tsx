@@ -1,21 +1,16 @@
 import * as React from 'react';
 
-import './style.css';
-
 interface PinProps {
   id: number,
   top: number,
   left: number,
   height: number,
   bgColor: string,
+  setLayer?: (id: number) => void;
 }
 
-// const getRandomColor = () => {
-//   return '#' + Math.ceil(Math.random() * 15).toString(16) + Math.ceil(Math.random() * 15).toString(16) + Math.ceil(Math.random() * 15).toString(16);
-// }
-
 const Pin = (props: PinProps) => {
-  const { id, top, left, height, bgColor } = props;
+  const { id, top, left, height, bgColor, setLayer } = props;
 
   return (
     <div className='wfc'
@@ -26,11 +21,12 @@ const Pin = (props: PinProps) => {
         lineHeight: height + 'px',
         backgroundColor: bgColor
       }}
+      onClick={ () => setLayer(id) }
     >
-      { id }
+      { id + 'x' }
     </div>
-  )
-}
+  );
+};
 
 const o = {
   cellWidth: 236,
@@ -39,9 +35,7 @@ const o = {
   maxCol: 0,
   minCol: 0,
   height: 0,
-  hs: [0, 0, 0, 0],
-}
-
+};
 
 interface WFCell {
   id: number,
@@ -52,11 +46,9 @@ interface WFCell {
   bgColor: string
 }
 
-
-const handlePos = (cell: WFCell) => {
+const handlePos = (cell: WFCell, hs: Array<number>) => {
   let cols = 4 - 0;
   let col = 0;
-  let hs = o.hs;
 
   if (0) {
 
@@ -85,59 +77,54 @@ const handlePos = (cell: WFCell) => {
   o.maxCol = max;
   o.minCol = min;
 
-  o.height = o.hs[max] + o.containerSelectorOffset;
+  o.height = hs[max] + o.containerSelectorOffset;
 
   return {
-    ...cell,
-    col,
-    top,
-    left,
+    cell: {
+      ...cell,
+      col,
+      top,
+      left,
+    },
+    hs,
   }
-}
+};
 
-let globalPins: Array<WFCell>;
-
-const App = () => {
-  const [state, setState] = React.useState({
+const usePageStatus = () => {
+  const [pageState, setPageState] = React.useState({
     wrapHeight: 0,
     cols: 4,
-    pins: []
+    hs: [0, 0, 0, 0],
+    pins: [],
+    globalPins: [],
   });
 
   React.useEffect(() => {
+    console.log('usePageStatus Init');
     let xhr = new XMLHttpRequest();
     xhr.overrideMimeType('application/json');
     xhr.open('GET', '/map/map-pins.json');
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
-        globalPins = JSON.parse(xhr.response);
-
-        console.log(globalPins);
+        let tmpGlobalPins = JSON.parse(xhr.response);
 
         let tmpPins = [];
-      // for (let i = 0; i < 15; i++) {
-      //   tmpPins.push({
-      //     id: i,
-      //     col: 0,
-      //     top: 0,
-      //     left: 0,
-      //     height: 200 + Math.ceil(Math.random() * 100)
-      //   });
-      // }
-        tmpPins = globalPins.slice(0, 20);
 
-        console.log('tmpPins: ', tmpPins);
+        tmpPins = tmpGlobalPins.slice(0, 20);
 
+        let tmpHs = [0, 0, 0, 0];
         tmpPins = tmpPins.map((pin: WFCell) => {
-          return handlePos(pin);
+          const { cell, hs } = handlePos(pin, tmpHs);
+          tmpHs = hs;
+          return cell;
         });
 
-        console.log('tmpPins: ', tmpPins);
-
-        setState({
+        setPageState({
           wrapHeight: o.height,
           cols: 4,
-          pins: tmpPins
+          hs: tmpHs,
+          pins: tmpPins,
+          globalPins: tmpGlobalPins,
         });
       }
     };
@@ -145,38 +132,43 @@ const App = () => {
   }, []);
 
   const addRandomPin = () => {
-    // let randomPin = {
-    //   id: state.pins.length,
-    //   col: 0,
-    //   top: 0,
-    //   left: 0,
-    //   height: 200 + Math.ceil(Math.random() * 100)
-    // };
-    let randomPin: WFCell = globalPins[state.pins.length];
-    console.log('AddRandomPin: ', state.pins.length);
-    // console.log('state.pins: ', state.pins);
-    console.log('state: ', state);
+    let randomPin: WFCell = pageState.globalPins[pageState.pins.length];
+    console.log('AddRandomPin: ', pageState.pins.length);
 
-    randomPin = handlePos(randomPin);
+    const { cell, hs} = handlePos(randomPin, pageState.hs);
 
-    setState({
-      ...state,
+    setPageState({
+      ...pageState,
       wrapHeight: o.height,
+      hs,
       pins: [
-        ...state.pins, randomPin
+        ...pageState.pins, cell
       ]
     });
-  }
+  };
+
+  const setLayer = (id: number) => {
+
+  };
+
+  return {
+    pageState,
+    addRandomPin,
+  };
+};
+
+const App = () => {
+  const { pageState, addRandomPin } = usePageStatus();
 
   return (
     <React.Fragment>
-      <div className={ `waterfall-wrap cols-${ state.cols }` }
+      <div className={ `waterfall-wrap cols-${ pageState.cols }` }
         style={{
-          height: state.wrapHeight
+          height: pageState.wrapHeight
         }}
       >
         {
-          state.pins.map((pin, index) => {
+          pageState.pins.map((pin, index) => {
             return (
               <Pin
                 id={ pin.id }
