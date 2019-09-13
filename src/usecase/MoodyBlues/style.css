@@ -1,0 +1,43 @@
+#MoodyBlues {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+#MoodyBlues rect {
+  position: absolute;
+}
+
+
+
+
+.MoodyBlues-test {
+  width: 400px;
+  height: 400px;
+}
+
+.MoodyBlues-test div {
+  box-sizing: border-box;
+  position: absolute;
+  border: 1px solid;
+  width: 20px;
+  height: 20px;
+}
+
+.MoodyBlues-test .xx,
+rect.xx {
+  animation: xx 0.3s 1;
+  transform-origin: center;
+}
+
+@keyframes xx {
+  from {
+    transform: rotate(0deg) scale(1.35);
+  }
+
+  to {
+    transform: rotate(0) scale(1);
+  }
+}

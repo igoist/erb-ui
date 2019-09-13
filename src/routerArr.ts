@@ -7,6 +7,12 @@ import CardChange from './usecase/CardChange';
 import VideoPlayer from './usecase/VideoPlayer';
 import StateManager from './usecase/StateManager';
 import Pins from './usecase/Pins';
+import TicTacToe from './usecase/TicTacToe';
+import Todo from './usecase/Todo';
+import Lottery from './usecase/Lottery';
+import Lottery2 from './usecase/Lottery2';
+import TmpScreenshot from './usecase/TmpScreenshot';
+import MoodyBlues from './usecase/MoodyBlues';
 
 const currentUrl = '/';
 
@@ -40,6 +46,36 @@ const routerArr: Array<RouterArrProps> = [
     path: currentUrl + 'pins',
     title: 'Usecase: Pins',
     component: Pins
+  },
+  {
+    path: currentUrl + 'moody-blues',
+    title: 'Usecase: MoodyBlues',
+    component: MoodyBlues
+  },
+  {
+    path: currentUrl + 'tic-tac-toe',
+    title: 'Usecase: TicTacToe',
+    component: TicTacToe
+  },
+  {
+    path: currentUrl + 'todo',
+    title: 'Usecase: Todo',
+    component: Todo
+  },
+  {
+    path: currentUrl + 'lottery',
+    title: 'Usecase: Lottery',
+    component: Lottery
+  },
+  {
+    path: currentUrl + 'lottery2',
+    title: 'Usecase: Lottery2',
+    component: Lottery2
+  },
+  {
+    path: currentUrl + 'tmpScreenshot',
+    title: 'Usecase: TmpScreenshot',
+    component: TmpScreenshot
   },
   {
     path: currentUrl + 'state-manager',
