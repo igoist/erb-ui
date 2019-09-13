@@ -107,6 +107,8 @@ const useMoodyBluesStatus = () => {
 
   };
 
+  (window as any).handleMoodyBlues = handleMoodyBlues;
+
   return {
     moodyBluesState,
     handleMoodyBlues
@@ -115,24 +117,34 @@ const useMoodyBluesStatus = () => {
 
 let flag = false;
 
+const s = (i, j, t) => {
+  setTimeout(() => {
+    (window as any).handle(i, j)
+  }, t * 30);
+}
+
 const MoodyBlues = () => {
   // const { handleMoodyBlues } = useMoodyBluesStatus();
   const { contentState, handleClick, toPrevContent, toNextContent, toContentStart } = useContentStatus();
 
+  const handle = (i, j) => {
+    handleClick(i, j);
+  };
+
+  const y = () => {
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        s(i, j, i * 20 + j);
+      }
+    }
+  };
+
+  (window as any).y = y;
+  (window as any).handle = handle;
+
   const handleMoodyBlues = () => {
     toContentStart();
 
-    // for (let i = 0; i < 20; i++) {
-    //   ((x) => {
-        // setTimeout(() => {
-        //   console.log('ss: ', i);
-        //   toNextContent();
-        // }, x * 100);
-    //   })(i);
-    // }
-    // useEffect(() => {
-    //   toNextContent();
-    // }, [contentState]);
     flag = true;
   };
 
