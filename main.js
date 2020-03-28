@@ -1,9 +1,16 @@
 // const electron = require('electron');
-const { app, BrowserWindow, globalShortcut, ipcMain, clipboard, nativeImage } = require('electron');
+const { app, BrowserWindow, globalShortcut, Tray, Menu, ipcMain, clipboard, nativeImage } = require('electron');
 const webpackConfig = require('./webpack/dev');
+const path = require('path');
+
 
 const Screenshot = require('./src/usecase/Screenshot/index.js');
 const ColorPicker = require('./src/usecase/ColorPicker/index.js');
+
+let pluginArr = [
+  Screenshot,
+  ColorPicker
+];
 
 function createWindow () {
   // 创建浏览器窗口
@@ -11,6 +18,7 @@ function createWindow () {
     width: 1440,
     height: 876,
     // file: './index.html'
+    nodeIntegration: false,
   });
 
   // 然后加载应用的 index.html。
@@ -29,9 +37,26 @@ function createWindow () {
     console.log('Ctrl+Y');
     win.webContents.send('mode-change', Math.random());
   });
-
-  Screenshot.initPlugin();
-  ColorPicker.initPlugin();
 }
 
-app.on('ready', createWindow)
+let appIcon;
+
+const handleReady = () => {
+  createWindow();
+
+  // let appIcon = new Tray('./public/img/ic_eighth.ico');
+  appIcon = new Tray(path.resolve(__dirname, './public/img/tray-icon.png'));
+
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Item1', type: 'radio' },
+    { label: 'Item2', type: 'radio' }
+  ]);
+
+  pluginArr.map((item) => {
+    item.initPlugin();
+  });
+
+  appIcon.setContextMenu(contextMenu);
+}
+
+app.on('ready', handleReady);

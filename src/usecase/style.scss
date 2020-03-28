@@ -1,0 +1,28 @@
+
+
+@mixin f($c) {
+  .promotion-btn {
+    color: $c;
+  }
+  &.promotion-popup {
+    .content {
+      & > div > h3 {
+        color: $c;
+      }
+    }
+  }
+}
+
+$colorDamai: #000;
+$colorTaobao: #111;
+$colorTbticket: #222;
+
+.skin-damai {
+  @include f($colorDamai);
+}
+.skin-damai {
+  @include f($colorTaobao);
+}
+.skin-damai {
+  @include f($colorTbticket);
+}

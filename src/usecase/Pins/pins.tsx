@@ -33,6 +33,7 @@ const o = {
   cellWidth: 236,
   cellSpace: 16,
   containerSelectorOffset: 50,
+  hibernate: 5000,
   // maxCol: 0,
   // minCol: 0,
   // height: 0,

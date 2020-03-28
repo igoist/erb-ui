@@ -16,6 +16,7 @@
 .MoodyBlues-test {
   width: 400px;
   height: 400px;
+  z-index: 1;
 }
 
 .MoodyBlues-test div {
@@ -30,11 +31,12 @@
 rect.xx {
   animation: xx 0.3s 1;
   transform-origin: center;
+  z-index: 2;
 }
 
 @keyframes xx {
   from {
-    transform: rotate(0deg) scale(1.35);
+    transform: rotate(225deg) scale(1.35);
   }
 
   to {

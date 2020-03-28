@@ -117,10 +117,12 @@ const useMoodyBluesStatus = () => {
 
 let flag = false;
 
+const delay = 2;
+
 const s = (i, j, t) => {
   setTimeout(() => {
     (window as any).handle(i, j)
-  }, t * 30);
+  }, t * delay);
 }
 
 const MoodyBlues = () => {
@@ -132,9 +134,27 @@ const MoodyBlues = () => {
   };
 
   const y = () => {
-    for (let i = 0; i < n; i++) {
-      for (let j = 0; j < n; j++) {
-        s(i, j, i * 20 + j);
+    // case 1
+    // for (let i = 0; i < n; i++) {
+    //   for (let j = 0; j < n; j++) {
+    //     s(i, j, i * 20 + j);
+    //   }
+    // }
+
+    // case 2
+    let f = false;
+    let c = 0;
+    for (let i = 0; i < n; i = i + 2) {
+      if (!f) {
+        for (let j = 0; j < n - 1; j++) {
+          s(i, j, c++ * 20 + j);
+        }
+        f = true;
+      } else {
+        for (let j = n - 1; j > 0; j--) {
+          s(i, j, c++ * 20 + 20 - j);
+        }
+        f = false;
       }
     }
   };
@@ -156,7 +176,7 @@ const MoodyBlues = () => {
           flag = false;
         }
       }
-    }, 30);
+    }, delay);
   }, [contentState]);
 
   return (

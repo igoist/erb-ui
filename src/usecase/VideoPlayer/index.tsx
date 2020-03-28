@@ -18,6 +18,31 @@ interface HandleFn {
   (): void;
 }
 
+interface BindMoveConfig {
+  el: any;
+  handleMove: any;
+  flag?: string;
+}
+
+const bindMove = (config: BindMoveConfig) => {
+  const { el, handleMove, flag } = config;
+
+  el.addEventListener('mousedown', (e: MouseEvent) => {
+    if (!flag) {
+      handleMove(e);
+    }
+
+    document.addEventListener('mousemove', handleMove);
+
+    const mouseUp = (e: MouseEvent) => {
+      document.removeEventListener('mousemove', handleMove);
+      el.removeEventListener('mouseup', mouseUp);
+    };
+
+    document.addEventListener('mouseup', mouseUp);
+  });
+};
+
 const VideoPlayer = () => {
   const playerRef = React.useRef(null);
 
@@ -45,6 +70,7 @@ const VideoPlayer = () => {
     };
 
 
+
     // (async () => {
     //   try {
     //     return await player.play();
@@ -63,7 +89,8 @@ const VideoPlayer = () => {
         <div className={ `${ V }` }>
           {/* <img src='http://hbimg.huabanimg.com/2802ce09a67569b45436100175c602e93b138b5663f5e-HVswtK_fw658' /> */}
           <img src='/img/w1.png' />
-          <video src={ state.src } ref={ playerRef }></video>
+          {/* <video src={ state.src } ref={ playerRef }></video> */}
+          <video src='/Users/Egoist/Downloads/video/Sex.Education.S01E02.WEBRip.x264-STRiFE[rarbg]/sex.education.s01e02.webrip.x264-strife.mkv' ref={ playerRef }></video>
         </div>
       </div>
       <div className={ `${ V }-control-wrap`}>
@@ -82,6 +109,9 @@ const VideoPlayer = () => {
           <div className={ `${ V }-control-btn ${ V }-control-btn08`} onClick={ () => handleTimeDelta(-10) }>-1.0s</div>
           <div className={ `${ V }-control-btn ${ V }-control-btn09`} onClick={ () => handleTimeDelta(-100) }>-10.0s</div>
           <div className={ `${ V }-control-btn ${ V }-control-btn10`} onClick={ () => handleTimeDelta(-1000) }>-100.0s</div>
+        </div>
+        <div className={ `${ V }-control-btn-group` }>
+
         </div>
       </div>
     </div>

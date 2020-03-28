@@ -1,4 +1,5 @@
 import * as React from 'react';
+const { useState, useEffect } = React;
 
 import './style.css';
 
@@ -83,35 +84,104 @@ export class CardChange extends React.Component<Props, any> {
     console.log('offset: ', offset);
 
     return (
-      <div className='wrapper'>
-        <div
-          className='olb'
-          onClick={ () => this.handleDispatch({ type: 'left'}) }
-        ></div>
-        <div
-          className='orb'
-          onClick={ () => this.handleDispatch({ type: 'right'}) }
-        ></div>
-        <ul className='box'>
-          {
-            data.map((item: any, index: number) => {
-              let n = (index + offset) % 7;
-              n = n < 0 ? n + 7 : n;
-              console.log('old: ', (index + offset) % 7, ' new: ', n);
+      <div>
+        <div className='wrapper'>
+          <div
+            className='olb'
+            onClick={ () => this.handleDispatch({ type: 'left'}) }
+          ></div>
+          <div
+            className='orb'
+            onClick={ () => this.handleDispatch({ type: 'right'}) }
+          ></div>
+          <ul className='box'>
+            {
+              data.map((item: any, index: number) => {
+                let n = (index + offset) % 7;
+                n = n < 0 ? n + 7 : n;
+                console.log('old: ', (index + offset) % 7, ' new: ', n);
 
-              return (
-                <li key={ index.toString() } className={ `item item-${ trickArr[n] }` } data-index={ index }>
-                  <img src={ Arr[index].imgUrl } />
-                  <p>{ item.title }</p>
-                </li>
-              );
-            })
-          }
-        </ul>
+                return (
+                  <li key={ index.toString() } className={ `item item-${ trickArr[n] }` } data-index={ index }>
+                    {/* <img src={ Arr[index].imgUrl } /> */}
+                    <p>{ item.title }</p>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </div>
+        <CardsChange />
       </div>
     );
   }
 }
 
+/**
+ * xswl 这么简单的东西一开始被我搞得那么复杂
+ **/
+const useCardsStatus = () => {
+  const [cardsState, setCards] = useState({
+    cards: Arr.slice(0, 4),
+    indexes: [0, 1, 2, 3],
+  });
+
+  const toPrev = () => {
+    let t = cardsState.indexes.map(i => i);
+    let tmp = t.shift();
+    t.push(tmp);
+
+    setCards({
+      ...cardsState,
+      indexes: t,
+    });
+  };
+
+  const toNext = () => {
+    let t = cardsState.indexes.map(i => i);
+    let tmp = t.pop();
+    t.unshift(tmp);
+
+    setCards({
+      ...cardsState,
+      indexes: t,
+    });
+  };
+
+  return {
+    cardsState,
+    toPrev,
+    toNext,
+  };
+};
+
+const CardsChange = () => {
+  const { cardsState, toPrev, toNext } = useCardsStatus();
+
+  return (
+    <div className='wrapper extra'>
+      <div
+        className='olb'
+        onClick={ toPrev }
+      ></div>
+      <div
+        className='orb'
+        onClick={ toNext }
+      ></div>
+      <ul className='box'>
+        {
+          cardsState.cards.map((item: any, index: number) => {
+            return (
+              <li key={ index.toString() } className={ `item item-${ cardsState.indexes[index] }` } data-index={ index }>
+                {/* <img src={ Arr[index].imgUrl } /> */}
+                <p>{ item.title }</p>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  )
+};
 
 export default CardChange;

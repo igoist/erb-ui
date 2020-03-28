@@ -39,7 +39,11 @@ const webpackConfig = {
         // test: /\.ts(x)$/,
         loader: ['babel-loader', 'ts-loader'],
         // exclude: [/node_modules/, /src\/usecase\/ColorPicker/]
-        exclude: [/node_modules/, path.resolve(path.resolve(__dirname, '..'), 'src/usecase/ColorPicker/')]
+        exclude: [
+          /node_modules/,
+          path.resolve(path.resolve(__dirname, '..'), 'src/usecase/ColorPicker/'),
+          path.resolve(path.resolve(__dirname, '..'), 'src/usecase/Pins-virtualized/'),
+        ]
         // exclude: [/node_modules/, './src/usecase/ColorPicker/']
       },
       {

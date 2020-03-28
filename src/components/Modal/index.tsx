@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+const Prefix = 'sp';
+
 export interface ModalProps {
   title: string;
   content: string;
@@ -83,21 +85,21 @@ class Modal extends React.Component {
 
     return (
       <div className='top1'>
-        <div className='modal-mask' ref={ el => this.mask = el }></div>
-        <div className='modal-wrap' ref={ el => this.modalWrap = el }>
-          <div className='modal confirm' ref={ el => this.modal = el }>
-            <div className='modal-content'>
-              <button aria-label='Close' className='modal-close' onClick={ this.handleCancel }>
-                <span className='modal-close-x'></span>
+        <div className={ `${ Prefix }-modal-mask` } ref={ el => this.mask = el }></div>
+        <div className={ `${ Prefix }-modal-wrap` } ref={ el => this.modalWrap = el }>
+          <div className={ `${ Prefix }-modal ${ Prefix }-confirm` } ref={ el => this.modal = el }>
+            <div className={ `${ Prefix }-modal-content` }>
+              <button aria-label='Close' className={ `${ Prefix }-modal-close` } onClick={ this.handleCancel }>
+                <span className={ `${ Prefix }-modal-close-x` }></span>
               </button>
-              <div className='modal-body'>
-                <div className='confirm-body-wrapper'>
-                  <div className='confirm-body'>
+              <div className={ `${ Prefix }-modal-body` }>
+                <div className={ `${ Prefix }-confirm-body-wrapper` }>
+                  <div className={ `${ Prefix }-confirm-body` }>
                     <i className='icon icon-question-circle'></i>
-                    <span className='confirm-title'>{ title }</span>
-                    <div className='confirm-content'>{ content }</div>
-                    <div className='confirm-btns'>
-                      <button className='btn bounce cancel' onClick={ this.handleCancel } style={{ marginRight: '12px' }}>
+                    <span className={ `${ Prefix }-confirm-title` }>{ title }</span>
+                    <div className={ `${ Prefix }-confirm-content` }>{ content }</div>
+                    <div className={ `${ Prefix }-confirm-btns` }>
+                      <button className='btn bounce cancel' onClick={ this.handleCancel } style={{ display: cancelText ? null : 'none', marginRight: '12px' }}>
                         <span>{ cancelText }</span>
                       </button>
                       <button className='btn bounce theme-confirm submit' onClick={ this.handleOK }>

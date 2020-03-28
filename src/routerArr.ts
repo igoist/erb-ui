@@ -13,6 +13,8 @@ import Lottery from './usecase/Lottery';
 import Lottery2 from './usecase/Lottery2';
 import TmpScreenshot from './usecase/TmpScreenshot';
 import MoodyBlues from './usecase/MoodyBlues';
+import FaceDetection from './usecase/FaceDetection';
+import Spray from './usecase/Spray';
 
 const currentUrl = '/';
 
@@ -48,6 +50,11 @@ const routerArr: Array<RouterArrProps> = [
     component: Pins
   },
   {
+    path: currentUrl + 'face-detection',
+    title: 'Usecase: FaceDetection',
+    component: FaceDetection
+  },
+  {
     path: currentUrl + 'moody-blues',
     title: 'Usecase: MoodyBlues',
     component: MoodyBlues
@@ -81,6 +88,11 @@ const routerArr: Array<RouterArrProps> = [
     path: currentUrl + 'state-manager',
     title: 'Usecase: StateManager',
     component: StateManager
+  },
+  {
+    path: currentUrl + 'spray',
+    title: 'Usecase: Spray',
+    component: Spray
   },
   {
     path: currentUrl + 'card-change',

@@ -38,6 +38,7 @@ export class App extends React.Component<AppProps, any> {
   handleClick(flag: string) {
     switch (flag) {
       case 'modal':
+        console.log('modal');
         Confirm({
           title: '删除作业',
           content: '删除作业后无法恢复，确认删除吗？',
@@ -52,6 +53,7 @@ export class App extends React.Component<AppProps, any> {
         });
         break;
       case 'message':
+        console.log('message');
         message = showMessage({
           content: 'Message: ...',
           duration: 2000 * 1000,
@@ -66,6 +68,7 @@ export class App extends React.Component<AppProps, any> {
         });
         break;
       case 'loadingRequest':
+        console.log('loadingRequest');
         loading01.loadingRequest();
         break;
       case 'loadingFinish':
